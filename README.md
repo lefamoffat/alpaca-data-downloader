@@ -13,8 +13,18 @@ ALPACA_API_KEY=<your-api-key>
 ALPACA_API_SECRET=<your-api-secret>
 ```
 
-To run the program run:
+To use the program, start by compiling the `.js` files:
+
+```
+yarn build
+```
+
+Then to start:
 
 ```
 yarn start
 ```
+
+### DEMO
+
+![DEMO](./assets/tutorial.gif)
