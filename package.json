@@ -1,0 +1,21 @@
+{
+  "name": "alpaca-data-downloader",
+  "version": "1.0.0",
+  "author": "Lefa Moffat",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsc -w ./src/main.ts",
+    "start": "tsc ./src/main.ts && node ./src/main.js"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "dotenv": "^16.0.0",
+    "fuzzy": "^0.1.3",
+    "inquirer": "^8.2.2",
+    "inquirer-autocomplete-prompt": "^2.0.0",
+    "inquirer-date-prompt": "^2.0.1",
+    "json2csv": "^5.0.7",
+    "moment": "^2.29.2",
+    "prompt-sync": "^4.2.0"
+  }
+}
