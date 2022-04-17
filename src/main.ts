@@ -59,5 +59,10 @@ inquirer
     },
   ])
   .then((answers: Answers) => {
-    convertJsonToCsv(answers.ticker, answers.timeframe, answers.startDate, answers.days)
+    convertJsonToCsv({
+      ticker: answers.ticker.toUpperCase(),
+      timeframe: answers.timeframe,
+      startDate: answers.startDate,
+      days: answers.days,
+    })
   })

@@ -2,20 +2,6 @@ require('dotenv').config()
 const axios = require('axios')
 const moment = require('moment')
 
-function toAlpacaTime(timestamp: number, offset: number) {
-  return moment.unix(timestamp).add(offset, 'days').toISOString()
-}
-
-function toAlpacaMarketDataEndpoint(timestamp: number, ticker: string, days: number) {
-  const daysOffset = days
-  const shouldOffset = moment.unix(timestamp).isBefore(moment().subtract(daysOffset, 'days'))
-  const startDate = `start=${toAlpacaTime(timestamp, -daysOffset)}`
-  const endDate = shouldOffset ? `&end=${toAlpacaTime(timestamp, daysOffset)}` : ''
-  const timeframe = '1Hour'
-
-  return `https://data.alpaca.markets/v2/stocks/${ticker}/bars?${startDate}${endDate}&timeframe=${timeframe}`
-}
-
 type AlpacaMarketData = {
   t: number
   o: number
@@ -27,11 +13,34 @@ type AlpacaMarketData = {
   vw: number
 }
 
-export async function getMarketData(ticker: string, startDate: string, bars: number): Promise<AlpacaMarketData[]> {
+export type GetMarketDataParams = {
+  days: number
+  startDate: string
+  ticker: string
+  timeframe: string
+}
+
+function toAlpacaTime(timestamp: number, offset?: number) {
+  return moment
+    .unix(timestamp)
+    .add(offset ?? 0, 'days')
+    .toISOString()
+}
+
+function toAlpacaMarketDataEndpoint({ startDate: selectedDate, ticker, days, timeframe }: GetMarketDataParams) {
+  const timestamp = moment(selectedDate).unix()
+  const shouldOffset = moment.unix(timestamp).isBefore(moment().subtract(days, 'days'))
+
+  const startDate = `start=${toAlpacaTime(timestamp)}`
+  const endDate = shouldOffset ? `&end=${toAlpacaTime(timestamp, days)}` : ''
+
+  return `https://data.alpaca.markets/v2/stocks/${ticker}/bars?${startDate}${endDate}&timeframe=${timeframe}`
+}
+
+export async function getMarketData(marketDataParams: GetMarketDataParams): Promise<AlpacaMarketData[]> {
   console.log('Getting market data...')
 
-  const timestamp = moment(startDate).unix()
-  const url = toAlpacaMarketDataEndpoint(timestamp, ticker, bars)
+  const url = toAlpacaMarketDataEndpoint(marketDataParams)
 
   try {
     const response = await axios({
@@ -42,8 +51,6 @@ export async function getMarketData(ticker: string, startDate: string, bars: num
         'APCA-API-SECRET-KEY': `${process.env.ALPACA_API_SECRET}`,
       },
     })
-
-    console.log('what is response.data', response.data?.bars[0])
 
     return response.data?.bars
   } catch (err) {
