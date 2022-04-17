@@ -10,6 +10,9 @@ const opts = { fields }
 export async function convertJsonToCsv(marketDataParams: GetMarketDataParams) {
   const data = await getMarketData(marketDataParams)
 
+  // END program execution if no data is returned
+  if (!data) return
+
   try {
     const csv = parse(data, opts)
     const { timeframe, ticker } = marketDataParams

@@ -54,6 +54,11 @@ export async function getMarketData(marketDataParams: GetMarketDataParams): Prom
 
     return response.data?.bars
   } catch (err) {
-    throw err
+    if (err.response?.status === 422) {
+      console.log(`\nERROR: ${err.message}`)
+      console.log('Try a different input combination, e.g. different startDate and/or days.\n')
+    } else {
+      console.log(err.message)
+    }
   }
 }

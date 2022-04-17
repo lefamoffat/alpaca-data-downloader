@@ -58,8 +58,8 @@ inquirer
       message: 'How many days?',
     },
   ])
-  .then((answers: Answers) => {
-    convertJsonToCsv({
+  .then(async (answers: Answers) => {
+    await convertJsonToCsv({
       ticker: answers.ticker.toUpperCase(),
       timeframe: answers.timeframe,
       startDate: answers.startDate,

@@ -4,8 +4,10 @@
   "author": "Lefa Moffat",
   "license": "MIT",
   "scripts": {
-    "dev": "tsc -w ./src/main.ts",
-    "start": "tsc ./src/main.ts && node ./src/main.js"
+    "build": "tsc ./src/main.ts",
+    "build:watch": "tsc -w ./src/main.ts",
+    "dev": "yarn build && yarn start",
+    "start": "node ./src/main.js"
   },
   "dependencies": {
     "axios": "^0.26.1",
