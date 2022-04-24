@@ -6,7 +6,7 @@ Find out more about Alpaca's market data [here](https://alpaca.markets/docs/api-
 
 ## Getting Started
 
-You'll need valid credentials from Alpaca. Once you have, create an `.env` file and add teh following:
+You'll need valid credentials from Alpaca. Once you have them, create an `.env` file and add the following:
 
 ```
 ALPACA_API_KEY=<your-api-key>
