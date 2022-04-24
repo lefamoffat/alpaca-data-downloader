@@ -18,7 +18,7 @@ export async function convertJsonToCsv(marketDataParams: GetMarketDataParams) {
     const { timeframe, ticker } = marketDataParams
 
     // directory to check if exists
-    const dir = `./data/${timeframe}/${ticker}`
+    const dir = `./data/${ticker}/${timeframe}`
 
     // check if directory exists
     if (!fs.existsSync(dir)) {
