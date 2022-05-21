@@ -23,3 +23,4 @@ yarn-error.log*
 # local settings
 .env
 settings.json
+etf/sp500-ticker-list.txt
