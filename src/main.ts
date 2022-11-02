@@ -7,6 +7,7 @@ import { convertJsonToCsv } from './convert-json-to-csv'
 import { getTickers } from './get-tickers'
 
 type Answers = {
+  instrumentType: string
   ticker: string
   timeframe: string
   startDate: string
@@ -15,7 +16,7 @@ type Answers = {
 
 async function searchTickers(answers: Answers, input = '') {
   // console.log('\n')
-  const tickers = await getTickers()
+  const tickers = await getTickers(answers.instrumentType)
 
   return new Promise(async (resolve) => {
     setTimeout(() => {
@@ -31,6 +32,13 @@ async function searchTickers(answers: Answers, input = '') {
 // EXECUTION WITH USER INPUT
 inquirer
   .prompt([
+    {
+      type: 'list',
+      default: 'stocks',
+      name: 'instrumentType',
+      message: 'What instrument type?',
+      choices: ['stocks', 'crypto'],
+    },
     {
       // https://github.com/mokkabonna/inquirer-autocomplete-prompt
       type: 'autocomplete',
@@ -60,6 +68,7 @@ inquirer
   ])
   .then(async (answers: Answers) => {
     await convertJsonToCsv({
+      instrumentType: answers.instrumentType,
       ticker: answers.ticker.toUpperCase(),
       timeframe: answers.timeframe,
       startDate: answers.startDate,

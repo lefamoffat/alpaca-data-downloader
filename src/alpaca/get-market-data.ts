@@ -18,6 +18,7 @@ export type GetMarketDataParams = {
   startDate: string
   ticker: string
   timeframe: string
+  instrumentType: string
 }
 
 function toAlpacaTime(timestamp: number, offset?: number) {
@@ -27,14 +28,23 @@ function toAlpacaTime(timestamp: number, offset?: number) {
     .toISOString()
 }
 
-function toAlpacaMarketDataEndpoint({ startDate: selectedDate, ticker, days, timeframe }: GetMarketDataParams) {
+function toAlpacaMarketDataEndpoint({
+  startDate: selectedDate,
+  ticker,
+  days,
+  timeframe,
+  instrumentType,
+}: GetMarketDataParams) {
   const timestamp = moment(selectedDate).unix()
   const shouldOffset = moment.unix(timestamp).isBefore(moment().subtract(days, 'days'))
 
   const startDate = `start=${toAlpacaTime(timestamp)}`
   const endDate = shouldOffset ? `&end=${toAlpacaTime(timestamp, days)}` : ''
 
-  return `https://data.alpaca.markets/v2/stocks/${ticker}/bars?${startDate}${endDate}&timeframe=${timeframe}`
+  const cryptoUrl = `https://data.alpaca.markets/v1beta2/crypto/bars?symbols=${ticker}&timeframe=${timeframe}&${startDate}${endDate}`
+  const stocksUrl = `https://data.alpaca.markets/v2/stocks/${ticker}/bars?${startDate}${endDate}&timeframe=${timeframe}`
+
+  return instrumentType === 'stocks' ? stocksUrl : cryptoUrl
 }
 
 export async function getMarketData(marketDataParams: GetMarketDataParams): Promise<AlpacaMarketData[]> {
@@ -52,7 +62,11 @@ export async function getMarketData(marketDataParams: GetMarketDataParams): Prom
       },
     })
 
-    return response.data?.bars
+    console.info('Got market data.', response.data)
+
+    return marketDataParams.instrumentType === 'stocks'
+      ? response.data?.bars
+      : response.data?.bars[marketDataParams.ticker]
   } catch (err) {
     if (err.response?.status === 422) {
       console.log(`\nERROR: ${err.message}`)

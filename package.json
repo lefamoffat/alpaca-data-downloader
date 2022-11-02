@@ -19,5 +19,8 @@
     "json2csv": "^5.0.7",
     "moment": "^2.29.2",
     "prompt-sync": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9"
   }
 }

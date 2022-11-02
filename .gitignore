@@ -4,7 +4,7 @@
 
 # data
 /data
-ticker-list.txt
+*-ticker-list.txt
 
 # dependencies
 /node_modules

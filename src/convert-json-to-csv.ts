@@ -14,11 +14,13 @@ export async function convertJsonToCsv(marketDataParams: GetMarketDataParams) {
   if (!data) return
 
   try {
+    console.info('Parsing data to csv...')
     const csv = parse(data, opts)
-    const { timeframe, ticker } = marketDataParams
+    const { instrumentType, timeframe, ticker } = marketDataParams
 
+    const tickerName = instrumentType === 'stocks' ? ticker : ticker.replace('/', '')
     // directory to check if exists
-    const dir = `./data/${ticker}/${timeframe}`
+    const dir = `./data/${instrumentType}/${tickerName}/${timeframe}`
 
     // check if directory exists
     if (!fs.existsSync(dir)) {
@@ -27,9 +29,9 @@ export async function convertJsonToCsv(marketDataParams: GetMarketDataParams) {
       fs.mkdirSync(dir, { recursive: true })
     }
 
-    fs.appendFile(`${dir}/${data[1].t}.csv`, csv, function (err) {
+    fs.appendFile(`${dir}/${data[1]?.t}.csv`, csv, function (err) {
       if (err) throw err
-      console.log(`Saved ${ticker} data - ${data[1].t}`)
+      console.log(`Saved ${ticker} data - ${data[1]?.t}`)
     })
   } catch (err) {
     console.error(err)
